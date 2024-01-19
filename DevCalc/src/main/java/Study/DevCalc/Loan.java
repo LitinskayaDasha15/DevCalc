@@ -6,7 +6,7 @@ public abstract class Loan {
 	int loanTerm;
 	double interestRate;
 
-	public abstract void CalculateStaticPayment();
+	public abstract double CalculateStaticPayment();
 
-	public abstract void AnnuityRate();
+	protected abstract double AnnuityRate(int loanTerm, double InterestRate);
 }
