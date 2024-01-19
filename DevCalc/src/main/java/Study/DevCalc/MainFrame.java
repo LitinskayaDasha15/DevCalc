@@ -5,22 +5,26 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 
 import java.awt.Dimension;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 public class MainFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JTextField loanAmount;
-	private JTextField loanTermInYears;
+	private JTextField loanTerm;
 	private JTextField annualInterestRate;
 	private JComboBox<String> сomboBoxTerm;
 
@@ -56,7 +60,7 @@ public class MainFrame extends JFrame {
 		boxHead.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 		
 		//Заголовок шапки
-		JLabel labelHead1 = new JLabel("Параметры кредита [?]");		
+		JLabel labelHead1 = new JLabel("Параметры кредита");		
 		boxHead.add(labelHead1);
 
 		
@@ -91,19 +95,22 @@ public class MainFrame extends JFrame {
 		
 		//Поля ввода	
 		loanAmount = new JTextField();
+		loanAmount.setColumns(15);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 1;
 		c.gridy = 0;
 		pane.add(loanAmount, c);
 		
-		loanTermInYears = new JTextField();
+		loanTerm = new JTextField();
+		loanTerm.setColumns(15);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
 		c.gridy = 1;
-		pane.add(loanTermInYears, c);
+		pane.add(loanTerm, c);
 		
 		annualInterestRate = new JTextField();
+		annualInterestRate.setColumns(15);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 1;
 		c.gridy = 2;
@@ -138,6 +145,9 @@ public class MainFrame extends JFrame {
 		JButton btnCalculate = new JButton("Расчитать");
 		boxUnder.add(btnCalculate);
 		
+		JButton btnSave = new JButton("Расчитать и сохранить xls");
+		boxUnder.add(btnSave);
+		
 		JLabel labelResult = new JLabel();
 		boxUnder.add(labelResult);
 		
@@ -149,13 +159,79 @@ public class MainFrame extends JFrame {
 		setContentPane(mainBox);
 		pack();
 		
+		
 //		Событие по нажатию на кнопку btnCalculate
 		btnCalculate.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				//TODO Обработка нажатия на кнопку
-				//labelResult.setText("Ежемесячный платеж: " + result);
-				//pack();
+				int amount, term;
+				double rate;
+				try
+				{
+					amount = Integer.parseInt(loanAmount.getText());
+					term = Integer.parseInt(loanTerm.getText());
+					rate = Double.parseDouble(annualInterestRate.getText());
+				}
+				catch(Exception ex)
+				{
+					labelResult.setText("Некорректный ввод");
+					labelResult.setToolTipText(ex.getMessage());
+					pack();
+					return;
+				}
+				if (сomboBoxTerm.getSelectedIndex() == 0) //0 - лет, 1 - мес.
+				{
+					term *= 12;
+				}
+				Calc pay = new Calc(amount, term, rate);
+				labelResult.setText("Ежемесячный платеж: " + Double.toString(pay.CalculateStaticPayment()) + "₽");
+				labelResult.setToolTipText("Размер платежа");
+				pack();
+			}
+		});
+		
+//		Событие по нажатию на кнопку btnSave		
+		btnSave.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int amount, term;
+				double rate;
+				try
+				{
+					amount = Integer.parseInt(loanAmount.getText());
+					term = Integer.parseInt(loanTerm.getText());
+					rate = Double.parseDouble(annualInterestRate.getText());
+				}
+				catch(Exception ex)
+				{
+					labelResult.setText("Некорректный ввод");
+					labelResult.setToolTipText(ex.getMessage());
+					pack();
+					return;
+				}
+				if (сomboBoxTerm.getSelectedIndex() == 0) //0 - лет, 1 - мес.
+				{
+					term *= 12;
+				}
+				Calc pay = new Calc(amount, term, rate);
+				labelResult.setText("Ежемесячный платеж: " + Double.toString(pay.CalculateStaticPayment()) + "₽");
+				labelResult.setToolTipText("Размер платежа");
+				pack();
+				List<Payment> pays = pay.CalculateDetailedPayments();
+				ExcelWorker excel = new ExcelWorker();
+		    	excel.FillData(pays);
+  	
+		    	//Диалог выбора пути сохранения файла
+		    	FileNameExtensionFilter filter = new FileNameExtensionFilter(".xls","xls");
+		        JFileChooser fc = new JFileChooser();
+		        fc.setFileFilter(filter);
+		        fc.setAcceptAllFileFilterUsed(false);
+		        if ( fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION ) {
+		            try {
+		            	excel.Save(fc.getSelectedFile().toString().endsWith(".xls") ? fc.getSelectedFile().toString() : fc.getSelectedFile() + ".xls");
+		            }
+		            catch ( Exception exc ) {}
+		        }
 			}
 		});
 	}
