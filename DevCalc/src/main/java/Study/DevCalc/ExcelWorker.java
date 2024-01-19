@@ -54,9 +54,9 @@ public class ExcelWorker {
 	        row.createCell(3).setCellValue(pay.getMainDebt());
 	        row.createCell(4).setCellValue(pay.getPercents());
 	        row.createCell(5).setCellValue(pay.getRemainDebt());
-	        sumOfPay = DevCalc.RoundTo(sumOfPay + pay.getSumOfPay(), 2);
-	        mainDebt = DevCalc.RoundTo(mainDebt + pay.getMainDebt(),2);
-	        percents = DevCalc.RoundTo(percents + pay.getPercents(),2);
+	        sumOfPay = Calc.RoundTo(sumOfPay + pay.getSumOfPay(), 2);
+	        mainDebt = Calc.RoundTo(mainDebt + pay.getMainDebt(),2);
+	        percents = Calc.RoundTo(percents + pay.getPercents(),2);
 	        rowNum++;
 		}
 		CreateUnder(rowNum, sumOfPay, mainDebt, percents);
