@@ -59,14 +59,14 @@ public class Calc extends Loan {
 		while (loanRemain >= 0.01) {
 			count++;
 			percents = RoundTo(loanRemain * monthRate, 4);
-			mainPay = RoundTo((loanRemain + percents >= staticPayment) ? staticPayment - percents : loanRemain, 2);
+			mainPay = RoundTo((loanRemain + percents >= staticPayment) ? staticPayment - percents : loanRemain, 4);
 			loanRemain = RoundTo(loanRemain - mainPay, 4);
 			dateOfPayment = dateOfPayment.plusMonths(1);
 
 			payments.add(new Payment(count,
 					Integer.toString(dateOfPayment.getYear()) + " "
 							+ engRus.get(dateOfPayment.getMonth().toString().toLowerCase()),
-					RoundTo(percents + mainPay, 2), mainPay, percents, loanRemain));
+					percents + mainPay, mainPay, percents, loanRemain));
 		}
 		return payments;
 	}
