@@ -34,9 +34,9 @@ public class ExcelWorker implements Saveable {
 	private void CreateUnder(int rowNum, double sumOfPay, double mainDebt, double percents) {
 		Row row = sheet.createRow(rowNum);
         row.createCell(1).setCellValue("ИТОГО:");
-        row.createCell(2).setCellValue(sumOfPay);
-        row.createCell(3).setCellValue(mainDebt);
-        row.createCell(4).setCellValue(percents);
+        row.createCell(2).setCellValue(String.format("%1$,.2f",sumOfPay));
+        row.createCell(3).setCellValue(String.format("%1$,.2f",mainDebt));
+        row.createCell(4).setCellValue(String.format("%1$,.2f",percents));
 	}
 	
 	//Заполнение данных
@@ -50,13 +50,13 @@ public class ExcelWorker implements Saveable {
 			Row row = sheet.createRow(rowNum);
 	        row.createCell(0).setCellValue(pay.getNumOfPay());
 	        row.createCell(1).setCellValue(pay.getdateOfPay().toString());
-	        row.createCell(2).setCellValue(pay.getSumOfPay());
-	        row.createCell(3).setCellValue(pay.getMainDebt());
-	        row.createCell(4).setCellValue(pay.getPercents());
-	        row.createCell(5).setCellValue(pay.getRemainDebt());
-	        sumOfPay = Calc.RoundTo(sumOfPay + pay.getSumOfPay(), 2);
-	        mainDebt = Calc.RoundTo(mainDebt + pay.getMainDebt(),2);
-	        percents = Calc.RoundTo(percents + pay.getPercents(),2);
+	        row.createCell(2).setCellValue(String.format("%1$,.2f",pay.getSumOfPay()));
+	        row.createCell(3).setCellValue(String.format("%1$,.2f",pay.getMainDebt()));
+	        row.createCell(4).setCellValue(String.format("%1$,.2f",pay.getPercents()));
+	        row.createCell(5).setCellValue(String.format("%1$,.2f",pay.getRemainDebt()));
+	        sumOfPay = Calc.RoundTo(sumOfPay + pay.getSumOfPay(), 4);
+	        mainDebt = Calc.RoundTo(mainDebt + pay.getMainDebt(), 4);
+	        percents = Calc.RoundTo(percents + pay.getPercents(), 4);
 	        rowNum++;
 		}
 		CreateUnder(rowNum, sumOfPay, mainDebt, percents);
