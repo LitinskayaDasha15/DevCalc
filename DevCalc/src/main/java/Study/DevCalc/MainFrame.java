@@ -148,7 +148,7 @@ public class MainFrame extends JFrame {
 		JButton btnSave = new JButton("Расчитать и сохранить xls");
 		boxUnder.add(btnSave);
 		
-		JLabel labelResult = new JLabel();
+		final JLabel labelResult = new JLabel();
 		boxUnder.add(labelResult);
 		
 		
