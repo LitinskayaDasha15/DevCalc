@@ -1,5 +1,6 @@
 package Study.DevCalc;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Calc extends Deposit {
+	private LocalDate startDate;
+
 	public Calc(int depositAmount, int depositTerm, double interestRate, int capitalizationFrequency) {
 		this.depositAmount = depositAmount;
 		this.depositTerm = depositTerm;
@@ -23,8 +26,16 @@ public class Calc extends Deposit {
 
 	}
 
+	public void setStartDate(LocalDate startDate) {
+		this.startDate = startDate;
+	}
+
 	// Вычисление каждого начисления по дипозиту
 	public List<Payment> CalculateDetailedPayments() {
+		if (startDate == null) {
+			startDate = LocalDate.now();
+		}
+
 		Map<String, String> engRus = new HashMap<String, String>();
 		engRus.put("january", "январь");
 		engRus.put("february", "февраль");
@@ -39,28 +50,75 @@ public class Calc extends Deposit {
 		engRus.put("november", "ноябрь");
 		engRus.put("december", "декабрь");
 
-		double staticDeposit = CalculateDeposit();
-		double loanRemain = depositAmount;
-		double monthRate = interestRate / 12 / 100;
-		double mainPay;
-		double percents;
-		int count = 0;
-		LocalDate dateOfPayment = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 1);
-
 		List<Payment> payments = new ArrayList<Payment>();
-		while (loanRemain >= 0.01) {
-			count++;
-			percents = RoundTo(loanRemain * monthRate, 4);
-			mainPay = RoundTo((loanRemain + percents >= staticDeposit) ? staticDeposit - percents : loanRemain, 4);
-			loanRemain = RoundTo(loanRemain - mainPay, 4);
-			dateOfPayment = dateOfPayment.plusMonths(1);
+		
+		payments.add(new Payment(0, startDate.toString(), 0, depositAmount));
 
-			payments.add(new Payment(count,
-					Integer.toString(dateOfPayment.getYear()) + " "
-							+ engRus.get(dateOfPayment.getMonth().toString().toLowerCase()),
-					percents + mainPay, mainPay, percents, loanRemain));
+		LocalDate calcDay = startDate;
+		LocalDate dateOfPay = startDate;
+		LocalDate endDate = startDate.plusMonths(depositTerm/capitalizationFrequency);
+
+		int period = getPeriodInMonths();
+		int periodBetween = period;
+		double depositNow = depositAmount;
+		double percents = 0;
+
+		int counter = 0;
+		while (dateOfPay.compareTo(endDate) < 0) {
+			counter++;
+			if (startDate.plusMonths(periodBetween).compareTo(endDate) <= 0) {
+				dateOfPay = startDate.plusMonths(periodBetween);
+			} else {
+				dateOfPay = endDate;
+			}
+			while (calcDay.compareTo(dateOfPay) < 0) {
+				calcDay = calcDay.plusDays(1);
+				percents += RoundTo(getPercentsOfDay(calcDay, depositNow),4);
+			}
+			
+			depositNow += percents;
+
+			payments.add(new Payment(counter, dateOfPay.toString(), percents, depositNow));
+
+			percents = 0;
+
+			periodBetween += period;
 		}
+
 		return payments;
+	}
+
+	private double getPercentsOfDay(LocalDate date, double dep) {
+		if (date.isLeapYear()) {
+			return dep * (interestRate / (366*100));
+		}
+		return dep * (interestRate / (365*100));
+	}
+
+	private int getPeriodInMonths() {
+		int res;
+		switch (capitalizationFrequency) {
+		case (1):
+			res = 12;
+			break;
+		case (2):
+			res = 6;
+			break;
+		case (4):
+			res = 3;
+			break;
+		case (12):
+			res = 1;
+			break;
+		default:
+			res = 12;
+			break;
+		}
+		return res;
+	}
+
+	public static LocalDate getLastDayOfMonth(LocalDate date) {
+		return date.withDayOfMonth(date.getMonth().length(date.isLeapYear()));
 	}
 
 	public static double RoundTo(double num, int scale) {
