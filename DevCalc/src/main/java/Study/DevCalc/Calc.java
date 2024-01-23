@@ -6,32 +6,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Calc extends Loan {
-	public Calc(int loanAmount, int loanTerm, double interestRate) {
-		this.loanAmount = loanAmount;
-		this.loanTerm = loanTerm;
+public class Calc extends Deposit {
+	public Calc(int depositAmount, int depositTerm, double interestRate, int capitalizationFrequency) {
+		this.depositAmount = depositAmount;
+		this.depositTerm = depositTerm;
 		this.interestRate = interestRate;
+		this.capitalizationFrequency = capitalizationFrequency;
 	}
 
 	@Override
-	public double CalculateStaticPayment() {
-		double pay = loanAmount * AnnuityRate(loanTerm, interestRate);
-		pay = RoundTo(pay, 4);
+	public double CalculateDeposit() {
+
+		double pay = depositAmount * Math.pow(1 + interestRate / 100 / capitalizationFrequency, depositTerm);
+		pay = RoundTo(pay, 2);
 		return pay;
 
 	}
 
-	@Override
-	protected double AnnuityRate(int loanTerm, double InterestRate) {
-		double rate;
-		double m = interestRate / 12 / 100;
-		int s = loanTerm;
-		rate = (m * Math.pow(1 + m, s)) / (Math.pow(1 + m, s) - 1);
-		return rate;
-
-	}
-
-	// Вычисление каждого платежа по крдиту
+	// Вычисление каждого начисления по дипозиту
 	public List<Payment> CalculateDetailedPayments() {
 		Map<String, String> engRus = new HashMap<String, String>();
 		engRus.put("january", "январь");
@@ -47,8 +39,8 @@ public class Calc extends Loan {
 		engRus.put("november", "ноябрь");
 		engRus.put("december", "декабрь");
 
-		double staticPayment = CalculateStaticPayment();
-		double loanRemain = loanAmount;
+		double staticDeposit = CalculateDeposit();
+		double loanRemain = depositAmount;
 		double monthRate = interestRate / 12 / 100;
 		double mainPay;
 		double percents;
@@ -59,7 +51,7 @@ public class Calc extends Loan {
 		while (loanRemain >= 0.01) {
 			count++;
 			percents = RoundTo(loanRemain * monthRate, 4);
-			mainPay = RoundTo((loanRemain + percents >= staticPayment) ? staticPayment - percents : loanRemain, 4);
+			mainPay = RoundTo((loanRemain + percents >= staticDeposit) ? staticDeposit - percents : loanRemain, 4);
 			loanRemain = RoundTo(loanRemain - mainPay, 4);
 			dateOfPayment = dateOfPayment.plusMonths(1);
 
