@@ -6,18 +6,18 @@ import junit.framework.TestCase;
 
 public class JUnit_test_Calc extends TestCase {
 	@Test
-	public void testCalculateStaticPayment() {
+	public void testCalculateDeposit() {
 		// Preparation
-		int loanAmount = 10000;
-		int loanTerm = 12;
+		int depAmount = 100000;
+		int depTerm = 12;
 		double interestRate = 5.0;
-		Calc loan = new Calc(loanAmount, loanTerm, interestRate);
+		int freq = 4;
+		Calc dep = new Calc(depAmount, depTerm, interestRate, freq);
 
 		// Action
-		double result = loan.CalculateStaticPayment();
+		double result = dep.CalculateDeposit();
 
 		// Assertion
-		assertEquals(856.0748, result);
+		assertEquals(116075.45, result);
 	}
-
 }
