@@ -16,11 +16,10 @@ public class Calc extends Deposit {
 
 	@Override
 	public double CalculateDeposit() {
-
-		double pay = depositAmount * Math.pow(1 + interestRate / 100 / capitalizationFrequency, depositTerm);
+		List<Payment> payments = CalculateDetailedPayments();
+		double pay = payments.get(payments.size() - 1).getDeposit();
 		pay = RoundTo(pay, 2);
 		return pay;
-
 	}
 
 	public void setStartDate(LocalDate startDate) {
