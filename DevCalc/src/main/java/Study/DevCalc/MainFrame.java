@@ -197,7 +197,14 @@ public class MainFrame extends JFrame {
 		btnCalculate.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				input(labelResult);
+				Calc pay = input(labelResult);
+				if (pay == null)
+				{
+					return;
+				}
+				labelResult.setText("<html>Сумма вклада с процентами: " + Double.toString(pay.CalculateDeposit()) + "₽</html>");
+				labelResult.setToolTipText("Итоговая сумма по окончанию срока вклада");
+				pack();
 			}
 		});
 		
@@ -212,7 +219,14 @@ public class MainFrame extends JFrame {
 					return;
 				}
 				
+				
+				
 				List<Payment> pays = pay.CalculateDetailedPayments();
+				
+				labelResult.setText("<html>Сумма вклада с процентами: " + Double.toString(pays.get(pays.size() - 1).getDeposit()) + "₽</html>");
+				labelResult.setToolTipText("Итоговая сумма по окончанию срока вклада");
+				pack();
+				
 				ExcelWorker excel = new ExcelWorker();
 		    	excel.FillData(pays);
   	
@@ -272,9 +286,7 @@ public class MainFrame extends JFrame {
 			term *= 12;
 		}
 		Calc pay = new Calc(amount, term, rate, freq);
-		labelResult.setText("<html>Сумма вклада с процентами: " + Double.toString(pay.CalculateDeposit()) + "₽</html>");
-		labelResult.setToolTipText("Итоговая сумма по окончанию срока вклада");
-		pack();
+		
 		return pay;
 	}
 
