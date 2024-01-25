@@ -202,7 +202,7 @@ public class MainFrame extends JFrame {
 				{
 					return;
 				}
-				labelResult.setText("<html>Сумма вклада с процентами: " + Double.toString(pay.CalculateDeposit()) + "₽</html>");
+				labelResult.setText("<html>Сумма вклада с процентами: " + String.format("%1$.2f", pay.CalculateDeposit()) + "₽</html>");
 				labelResult.setToolTipText("Итоговая сумма по окончанию срока вклада");
 				pack();
 			}
@@ -223,7 +223,7 @@ public class MainFrame extends JFrame {
 				
 				List<Payment> pays = pay.CalculateDetailedPayments();
 				
-				labelResult.setText("<html>Сумма вклада с процентами: " + Double.toString(pays.get(pays.size() - 1).getDeposit()) + "₽</html>");
+				labelResult.setText("<html>Сумма вклада с процентами: " + String.format("%1$.2f", pays.get(pays.size() - 1).getDeposit()) + "₽</html>");
 				labelResult.setToolTipText("Итоговая сумма по окончанию срока вклада");
 				pack();
 				
