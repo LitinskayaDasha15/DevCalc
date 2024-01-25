@@ -142,11 +142,11 @@ public class MainFrame extends JFrame {
 		c.gridy = 0;
 		pane.add(labelCurrencyUnit, c);
 		
-		JLabel labelTerm = new JLabel("(в годах)");
+		сomboBoxTerm = new JComboBox<String>(new String[] {"лет", "мес."});
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 2;
 		c.gridy = 1;
-		pane.add(labelTerm, c);
+		pane.add(сomboBoxTerm, c);
 		
 		JLabel labelRatePeriod = new JLabel("% в год");
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -179,8 +179,10 @@ public class MainFrame extends JFrame {
 		
 		boxUnder.add(boxButtons);
 		
-		final JLabel labelResult = new JLabel();
+		final JLabel labelResult = new JLabel("");
 		boxUnder.add(labelResult);
+		Component verticalStrut_2 = Box.createVerticalStrut(20);
+		boxUnder.add(verticalStrut_2);
 		
 		
 		mainBox.add(boxHead);
@@ -196,7 +198,6 @@ public class MainFrame extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				input(labelResult);
-				pack();
 			}
 		});
 		
@@ -206,7 +207,10 @@ public class MainFrame extends JFrame {
 			public void mouseClicked(MouseEvent e)
 			{
 				Calc pay = input(labelResult);
-				pack();
+				if (pay == null)
+				{
+					return;
+				}
 				
 				List<Payment> pays = pay.CalculateDetailedPayments();
 				ExcelWorker excel = new ExcelWorker();
@@ -245,7 +249,7 @@ public class MainFrame extends JFrame {
 			pack();
 			return null;
 		}
-		switch (сomboBoxСapitalizationFrequency.getSelectedIndex())
+		switch (сomboBoxСapitalizationFrequency.getSelectedIndex()) //частота капитализации в год
 		{
 		case (0):
 			freq = 1;
@@ -263,10 +267,14 @@ public class MainFrame extends JFrame {
 			freq = 1;
 			break;
 		}
-		term *= freq;
+		if (сomboBoxTerm.getSelectedIndex() == 0) //0 - лет; 1 - мес.
+		{
+			term *= 12;
+		}
 		Calc pay = new Calc(amount, term, rate, freq);
-		labelResult.setText("Сумма вклада с процентами: " + Double.toString(pay.CalculateDeposit()) + "₽");
+		labelResult.setText("<html>Сумма вклада с процентами: " + Double.toString(pay.CalculateDeposit()) + "₽</html>");
 		labelResult.setToolTipText("Итоговая сумма по окончанию срока вклада");
+		pack();
 		return pay;
 	}
 

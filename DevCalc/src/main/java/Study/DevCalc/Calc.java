@@ -39,7 +39,7 @@ public class Calc extends Deposit {
 
 		LocalDate calcDay = startDate; //хранит дату рассчитываемого дня
 		LocalDate dateOfPay = startDate; //хранит дату капитализации
-		LocalDate endDate = startDate.plusMonths(depositTerm/capitalizationFrequency); //дата последней выплаты
+		LocalDate endDate = startDate.plusMonths(depositTerm); //дата последней выплаты
 
 		int period = getPeriodInMonths(); //период между выплатами в месяцах
 		int periodBetween = period; //период от даты открытия счета до выплаты. Увеличивается с шагом цикла на значение period
