@@ -15,7 +15,7 @@ public class ExcelWorker implements Saveable {
 	
 	public ExcelWorker() {
 		workbook = new HSSFWorkbook();
-		sheet = workbook.createSheet("График платежей");
+		sheet = workbook.createSheet("Детализация по вкладу");
 	}
 	
 	//Заполнение шапки
@@ -23,44 +23,37 @@ public class ExcelWorker implements Saveable {
 		Row row = sheet.createRow(0);
         row.createCell(0).setCellValue("№");
         row.createCell(1).setCellValue("Дата платежа");
-        row.createCell(2).setCellValue("Сумма платежа");
-        row.createCell(3).setCellValue("Основной долг");
-        row.createCell(4).setCellValue("Проценты");
-        row.createCell(5).setCellValue("Остаток долга");
-        
+        row.createCell(2).setCellValue("Начисленные проценты");
+        row.createCell(3).setCellValue("Баланс");
 	}
 	
 	//Заполнение подвала
-	private void CreateUnder(int rowNum, double sumOfPay, double mainDebt, double percents) {
+	private void CreateUnder(int rowNum, double sumOfPercents, double sumOfDeposit) {
 		Row row = sheet.createRow(rowNum);
         row.createCell(1).setCellValue("ИТОГО:");
-        row.createCell(2).setCellValue(String.format("%1$,.2f",sumOfPay));
-        row.createCell(3).setCellValue(String.format("%1$,.2f",mainDebt));
-        row.createCell(4).setCellValue(String.format("%1$,.2f",percents));
+        row.createCell(2).setCellValue(String.format("%1$.2f", sumOfPercents));
+        row.createCell(3).setCellValue(String.format("%1$.2f", sumOfDeposit));
 	}
 	
 	//Заполнение данных
 	public void FillData(List<Payment> data) {
 		CreateHead();
 		int rowNum = 1;
-		double sumOfPay = 0;
-		double mainDebt = 0;
-		double percents = 0;
+		double sumOfPercents = 0;
+		
 		for (Payment pay : data){
 			Row row = sheet.createRow(rowNum);
 	        row.createCell(0).setCellValue(pay.getNumOfPay());
-	        row.createCell(1).setCellValue(pay.getdateOfPay().toString());
-	        row.createCell(2).setCellValue(String.format("%1$,.2f",pay.getSumOfPay()));
-	        row.createCell(3).setCellValue(String.format("%1$,.2f",pay.getMainDebt()));
-	        row.createCell(4).setCellValue(String.format("%1$,.2f",pay.getPercents()));
-	        row.createCell(5).setCellValue(String.format("%1$,.2f",pay.getRemainDebt()));
-	        sumOfPay = Calc.RoundTo(sumOfPay + pay.getSumOfPay(), 4);
-	        mainDebt = Calc.RoundTo(mainDebt + pay.getMainDebt(), 4);
-	        percents = Calc.RoundTo(percents + pay.getPercents(), 4);
+	        row.createCell(1).setCellValue(pay.getdateOfPay());
+	        row.createCell(2).setCellValue(String.format("%1$.2f",pay.getPercents()));
+	        row.createCell(3).setCellValue(String.format("%1$.2f",pay.getDeposit()));
+	        sumOfPercents = sumOfPercents + pay.getPercents();
 	        rowNum++;
 		}
-		CreateUnder(rowNum, sumOfPay, mainDebt, percents);
-		for (int clmn = 0; clmn <=5; clmn++)
+		
+		CreateUnder(rowNum, sumOfPercents, data.get(rowNum-2).getDeposit());
+		
+		for (int clmn = 0; clmn <=3; clmn++)
 		{
 			sheet.autoSizeColumn(clmn);
 		}

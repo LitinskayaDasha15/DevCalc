@@ -3,20 +3,16 @@ package Study.DevCalc;
 public class Payment {
 	private int numOfPay;
 	private String dateOfPay;
-	private double sumOfPay;
-	private double mainDebt;
 	private double percents;
-	private double remainDebt;
+	private double deposit;
 	
 	public Payment() {}
 	
-	public Payment(int numOfPay, String dateOfPay, double sumOfPay, double mainDebt, double percents, double remainDebt) {
+	public Payment(int numOfPay, String dateOfPay, double percents, double deposit) {
 		this.numOfPay = numOfPay;
 		this.dateOfPay = dateOfPay;
-		this.sumOfPay = sumOfPay;
-		this.mainDebt = mainDebt;
 		this.percents = percents;
-		this.remainDebt = remainDebt;
+		this.deposit = deposit;
 	}
 	
 	public int getNumOfPay() {
@@ -35,22 +31,6 @@ public class Payment {
         this.dateOfPay = dateOfPay;
     }
     
-    public double getSumOfPay() {
-        return sumOfPay;
-    }
- 
-    public void setSumOfPay(double sumOfPay) {
-        this.sumOfPay = sumOfPay;
-    }
-    
-    public double getMainDebt() {
-        return mainDebt;
-    }
- 
-    public void setMainDebt(double mainDebt) {
-        this.mainDebt = mainDebt;
-    }
-    
     public double getPercents() {
         return percents;
     }
@@ -59,11 +39,11 @@ public class Payment {
         this.percents = percents;
     }
     
-    public double getRemainDebt() {
-        return remainDebt;
+    public double getDeposit() {
+        return deposit;
     }
  
-    public void setRemainDebt(double remainDebt) {
-        this.remainDebt = remainDebt;
+    public void setDeposits(double deposit) {
+        this.deposit = deposit;
     }
 }
