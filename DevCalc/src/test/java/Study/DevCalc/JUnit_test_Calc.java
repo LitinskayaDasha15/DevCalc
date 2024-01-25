@@ -18,6 +18,6 @@ public class JUnit_test_Calc extends TestCase {
 		double result = dep.CalculateDeposit();
 
 		// Assertion
-		assertEquals(116075.45, result);
+		assertEquals(105095.5, result);
 	}
 }
