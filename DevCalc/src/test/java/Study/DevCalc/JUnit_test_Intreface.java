@@ -9,14 +9,15 @@ import org.junit.Test;
 
 public class JUnit_test_Intreface {
 
-	@Test
+  @Test
     public void testSave() {
         ExcelWorker excelWorker = new ExcelWorker();
-        int loanAmount = 10000;
-        int loanTerm = 12;
-        double interestRate = 5.0;
-        Calc loan = new Calc(loanAmount, loanTerm, interestRate);
-        List<Payment> testData = loan.CalculateDetailedPayments();
+        int depAmount = 153089;
+        int depTerm = 34;
+        double interestRate = 5.9;
+        int capFreq = 4;
+        Calc dep = new Calc(depAmount, depTerm, interestRate, capFreq);
+        List<Payment> testData = dep.CalculateDetailedPayments();
         excelWorker.FillData(testData);
 
         String testFilePath = "test.xlsx";
