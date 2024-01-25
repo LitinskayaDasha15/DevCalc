@@ -1,14 +1,11 @@
 package Study.DevCalc;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Calc extends Deposit {
-	private LocalDate startDate;
+	private LocalDate startDate; //дата открытия счета
 
 	public Calc(int depositAmount, int depositTerm, double interestRate, int capitalizationFrequency) {
 		this.depositAmount = depositAmount;
@@ -30,38 +27,24 @@ public class Calc extends Deposit {
 		this.startDate = startDate;
 	}
 
-	// Вычисление каждого начисления по дипозиту
+	// Вычисление каждого начисления по депозиту
 	public List<Payment> CalculateDetailedPayments() {
 		if (startDate == null) {
 			startDate = LocalDate.now();
 		}
 
-		Map<String, String> engRus = new HashMap<String, String>();
-		engRus.put("january", "январь");
-		engRus.put("february", "февраль");
-		engRus.put("march", "март");
-		engRus.put("april", "апрель");
-		engRus.put("may", "май");
-		engRus.put("june", "июнь");
-		engRus.put("july", "июль");
-		engRus.put("august", "август");
-		engRus.put("september", "сентябрь");
-		engRus.put("october", "октябрь");
-		engRus.put("november", "ноябрь");
-		engRus.put("december", "декабрь");
-
 		List<Payment> payments = new ArrayList<Payment>();
 		
-		payments.add(new Payment(0, startDate.toString(), 0, depositAmount));
+		payments.add(new Payment(0, startDate.toString(), 0, depositAmount)); //нулевой платеж (первое внесение капитала)
 
-		LocalDate calcDay = startDate;
-		LocalDate dateOfPay = startDate;
-		LocalDate endDate = startDate.plusMonths(depositTerm/capitalizationFrequency);
+		LocalDate calcDay = startDate; //хранит дату рассчитываемого дня
+		LocalDate dateOfPay = startDate; //хранит дату капитализации
+		LocalDate endDate = startDate.plusMonths(depositTerm/capitalizationFrequency); //дата последней выплаты
 
-		int period = getPeriodInMonths();
-		int periodBetween = period;
-		double depositNow = depositAmount;
-		double percents = 0;
+		int period = getPeriodInMonths(); //период между выплатами в месяцах
+		int periodBetween = period; //период от даты открытия счета до выплаты. Увеличивается с шагом цикла на значение period
+		double depositNow = depositAmount; //хранит последнюю сумму вклада
+		double percents = 0; //проценты, накапливающиеся до капитализации
 
 		int counter = 0;
 		while (dateOfPay.compareTo(endDate) < 0) {
@@ -88,6 +71,7 @@ public class Calc extends Deposit {
 		return payments;
 	}
 
+	//получение суммы по процентам за один день
 	private double getPercentsOfDay(LocalDate date, double dep) {
 		if (date.isLeapYear()) {
 			return dep * (interestRate / (366*100));
@@ -95,6 +79,7 @@ public class Calc extends Deposit {
 		return dep * (interestRate / (365*100));
 	}
 
+	//получение количества месяцев между выплатами
 	private int getPeriodInMonths() {
 		int res;
 		switch (capitalizationFrequency) {
@@ -117,10 +102,7 @@ public class Calc extends Deposit {
 		return res;
 	}
 
-	public static LocalDate getLastDayOfMonth(LocalDate date) {
-		return date.withDayOfMonth(date.getMonth().length(date.isLeapYear()));
-	}
-
+	//округление
 	public static double RoundTo(double num, int scale) {
 		double sc = Math.pow(10, scale);
 		return Math.round(num * sc) / sc;
