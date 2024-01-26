@@ -19,7 +19,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.math.MathContext;
 import java.util.List;
 
 public class MainFrame extends JFrame {
@@ -102,6 +101,12 @@ public class MainFrame extends JFrame {
 		c.gridy = 3;
 		pane.add(labelСapitalizationFrequency, c);
 		
+		final JLabel labelResultTitle = new JLabel("");
+		labelResultTitle.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = 4;
+		pane.add(labelResultTitle, c);
 		
 		//Поля ввода	
 		depAmount = new JTextField();
@@ -132,6 +137,13 @@ public class MainFrame extends JFrame {
 		c.gridx = 1;
 		c.gridy = 3;
 		pane.add(сomboBoxСapitalizationFrequency, c);
+		
+		final JLabel labelResult = new JLabel("");
+		labelResult.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 1;
+		c.gridy = 4;
+		pane.add(labelResult, c);
 		
 		
 		//Поля выбора
@@ -166,7 +178,7 @@ public class MainFrame extends JFrame {
 //		Подвал
 		Box boxUnder = Box.createVerticalBox();
 		
-		Component verticalStrut_1 = Box.createVerticalStrut(20);
+		Component verticalStrut_1 = Box.createVerticalStrut(10);
 		boxUnder.add(verticalStrut_1);
 		
 		Box boxButtons = Box.createHorizontalBox();
@@ -178,11 +190,6 @@ public class MainFrame extends JFrame {
 		boxButtons.add(btnSave);
 		
 		boxUnder.add(boxButtons);
-		
-		final JLabel labelResult = new JLabel("");
-		boxUnder.add(labelResult);
-		Component verticalStrut_2 = Box.createVerticalStrut(20);
-		boxUnder.add(verticalStrut_2);
 		
 		
 		mainBox.add(boxHead);
@@ -202,8 +209,10 @@ public class MainFrame extends JFrame {
 				{
 					return;
 				}
-				labelResult.setText("<html>Сумма вклада с процентами: " + String.format("%1$.2f", pay.CalculateDeposit()) + "₽</html>");
-				labelResult.setToolTipText("Итоговая сумма по окончанию срока вклада");
+				labelResultTitle.setText("<html>Сумма вклада с процентами: ");
+				labelResultTitle.setToolTipText("Итоговая сумма по окончанию срока вклада");
+				
+				labelResult.setText(String.format("%1$.2f", pay.CalculateDeposit()) + "₽");
 				pack();
 			}
 		});
@@ -223,8 +232,10 @@ public class MainFrame extends JFrame {
 				
 				List<Payment> pays = pay.CalculateDetailedPayments();
 				
-				labelResult.setText("<html>Сумма вклада с процентами: " + String.format("%1$.2f", pays.get(pays.size() - 1).getDeposit()) + "₽</html>");
-				labelResult.setToolTipText("Итоговая сумма по окончанию срока вклада");
+				labelResultTitle.setText("<html>Сумма вклада с процентами: ");
+				labelResultTitle.setToolTipText("Итоговая сумма по окончанию срока вклада");
+				
+				labelResult.setText(String.format("%1$.2f", pay.CalculateDeposit()) + "₽");
 				pack();
 				
 				ExcelWorker excel = new ExcelWorker();
