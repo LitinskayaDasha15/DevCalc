@@ -2,6 +2,7 @@ package Study.DevCalc;
 
 import static org.junit.Assert.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.Test;
@@ -27,7 +28,7 @@ public class JUnit_test_DetailedPayments {
         // Check some values in the payments list
         Payment firstPayment = payments.get(1);
         assertEquals(1, firstPayment.getNumOfPay());
-        assertEquals("2024-04-25", firstPayment.getdateOfPay());
+        assertEquals(LocalDate.now().plusMonths(12/capFreq).toString(), firstPayment.getdateOfPay());
         assertEquals(155334.73, firstPayment.getDeposit(), 0.005);
         // Add more assertions based on your specific requirements
     }
